@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cyber37°</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="assets/cyber37deg-icon-tile-light.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=JetBrains+Mono:wght@500&family=Noto+Sans+SC:wght@400;900&display=swap" rel="stylesheet">
+<script>document.documentElement.classList.add("js");</script>
+<style>
+  :root {
+    --bg: #F7F5F0;
+    --surface: #ECE9E1;
+    --line: #D9D5CC;
+    --ink: #1E2327;
+    --muted: #5E6468;
+    --cool: #2FA3B5;
+    --cool-text: #177584;
+    --warm: #F0566B;
+    --warm-text: #CC3049;
+    --fill: #1E2327;
+    --on-fill: #F7F5F0;
+    --fill-cool: #6CC7D6;
+    --sans: "Bricolage Grotesque", "Noto Sans SC", system-ui, sans-serif;
+    --mono: "JetBrains Mono", "Noto Sans SC", ui-monospace, monospace;
+    --ease: cubic-bezier(0.16, 0.84, 0.24, 1);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #1E2327; --surface: #2A3035; --line: #3A4147; --ink: #F7F5F0; --muted: #A3A9AD;
+      --cool: #6CC7D6; --cool-text: #6CC7D6; --warm: #F0566B; --warm-text: #F0566B;
+      --fill: #F7F5F0; --on-fill: #1E2327; --fill-cool: #2FA3B5;
+    }
+    :root:not([data-theme="light"]) .logo .logo-on-light { display: none; }
+    :root:not([data-theme="light"]) .logo .logo-on-dark { display: block; }
+  }
+  :root[data-theme="dark"] {
+    --bg: #1E2327; --surface: #2A3035; --line: #3A4147; --ink: #F7F5F0; --muted: #A3A9AD;
+    --cool: #6CC7D6; --cool-text: #6CC7D6; --warm: #F0566B; --warm-text: #F0566B;
+    --fill: #F7F5F0; --on-fill: #1E2327; --fill-cool: #2FA3B5;
+  }
+  :root[data-theme="dark"] .logo .logo-on-light { display: none; }
+  :root[data-theme="dark"] .logo .logo-on-dark { display: block; }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 17px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 0 24px; }
+
+  /* Header: the small logo only shows once the big one has scrolled away. */
+  header { position: sticky; top: 0; z-index: 10; background: color-mix(in srgb, var(--bg) 86%, transparent); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+  header .wrap { display: flex; align-items: center; justify-content: space-between; padding-top: 16px; padding-bottom: 16px; }
+  .logo img { height: 34px; width: auto; }
+  .logo .logo-on-light { display: block; }
+  .logo .logo-on-dark { display: none; }
+  .js .logo { opacity: 0; transform: translateY(-6px); transition: opacity 0.35s, transform 0.35s var(--ease); pointer-events: none; }
+  .js.past-hero .logo { opacity: 1; transform: none; pointer-events: auto; }
+  nav { display: flex; align-items: center; gap: 22px; font-size: 15px; }
+  nav a { color: var(--ink); text-decoration: none; }
+  nav a:hover { color: var(--cool-text); }
+  .theme {
+    font: 500 12px var(--mono); color: var(--muted); background: none;
+    border: 1px solid var(--line); border-radius: 999px; padding: 5px 12px; cursor: pointer;
+  }
+  .theme:hover { color: var(--ink); border-color: var(--muted); }
+
+  /* Hero: the name slides out of the ring's left side. */
+  .hero { padding: 40px 0 80px; }
+  .lockup { display: block; width: 100%; height: auto; margin-bottom: 28px; cursor: pointer; }
+  .lockup .word { fill: var(--ink); }
+  .lockup .ring { fill: var(--cool); }
+  .lockup .core { fill: var(--warm); }
+  .lockup .ring, .lockup .core { transform-box: fill-box; transform-origin: center; }
+  .lockup.play .word { animation: slide-out 1.8s cubic-bezier(0.22, 0.61, 0.2, 1) 0.55s both; }
+  .lockup.play .ring { animation: pop 0.8s var(--ease) both; }
+  .lockup.play .core { animation: pop 0.7s var(--ease) 0.25s both, pulse 3.2s ease-in-out 2.8s infinite; }
+  @keyframes slide-out { from { transform: translateX(3900px); } to { transform: none; } }
+  @keyframes pop { from { transform: scale(0.4); opacity: 0; } to { transform: none; opacity: 1; } }
+  @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.14); } }
+  .hero h1 { font-weight: 800; font-size: clamp(30px, 4.6vw, 52px); line-height: 1.15; letter-spacing: -0.02em; margin: 0 0 16px; max-width: 16em; }
+  .hero p { font-size: 19px; margin: 0; max-width: 30em; }
+
+  /* Text comes in line by line: fade in and rise. */
+  .js .rise { opacity: 0; transform: translateY(16px); transition: opacity 0.7s var(--ease), transform 0.7s var(--ease); transition-delay: var(--delay, 0s); }
+  .js .rise.in { opacity: 1; transform: none; }
+
+  h2 { font: 500 13px var(--mono); color: var(--muted); letter-spacing: 0.04em; margin: 0 0 16px; }
+  section { padding: 0 0 72px; scroll-margin-top: 84px; }
+
+  /* Product cards: a circle spreads from where the pointer entered. */
+  .products { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .card {
+    position: relative; overflow: hidden; isolation: isolate;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 32px;
+    min-height: 260px; display: flex; flex-direction: column; gap: 12px;
+    transition: color 0.4s, border-color 0.4s;
+  }
+  .card::before {
+    content: ""; position: absolute; z-index: -1;
+    left: var(--mx, 50%); top: var(--my, 50%);
+    width: 300%; aspect-ratio: 1; border-radius: 50%;
+    background: var(--fill);
+    transform: translate(-50%, -50%) scale(0);
+    transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .card:hover::before, .card:focus-visible::before { transform: translate(-50%, -50%) scale(1); transition-duration: 1.1s; }
+  .card:hover, .card:focus-visible { color: var(--on-fill); border-color: var(--fill); outline: none; }
+  .card p { margin: 0; max-width: 26em; }
+  .card h3 { font-weight: 800; font-size: clamp(28px, 3.4vw, 38px); line-height: 1.15; margin: 0; padding-right: 72px; }
+  /* The ring waits in the corner. On hover it comes to the pointer and the
+     core appears in it: the visitor becomes the dot inside the ring. */
+  .probe {
+    position: absolute; z-index: 1; width: 52px; height: 52px; pointer-events: none;
+    left: var(--px, calc(100% - 58px)); top: var(--py, 58px);
+    transform: translate(-50%, -50%);
+    transition: left 0.28s var(--ease), top 0.28s var(--ease);
+  }
+  .probe svg { display: block; width: 100%; height: 100%; overflow: visible; animation: breathe 3.2s ease-in-out infinite; }
+  .probe .ring { fill: none; stroke: var(--cool); stroke-width: 20; transition: stroke 0.4s; }
+  .probe .core { fill: var(--warm); transform-box: fill-box; transform-origin: center; transform: scale(0); transition: transform 0.45s var(--ease); }
+  .card:hover .probe svg, .card:focus-visible .probe svg { animation: none; }
+  .card:hover .probe .ring, .card:focus-visible .probe .ring { stroke: var(--fill-cool); }
+  .card:hover .probe .core, .card:focus-visible .probe .core { transform: scale(1); }
+  @keyframes breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+  @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    .js .card:hover { cursor: none; }
+  }
+  .card small { font: 500 12px var(--mono); color: var(--muted); transition: color 0.3s; }
+  .by { font: 500 12px var(--mono); color: var(--muted); margin-top: auto; transition: color 0.3s; }
+  .card:hover small, .card:hover .by, .card:focus-visible small, .card:focus-visible .by { color: var(--on-fill); }
+
+  /* Log: reads like a lab notebook on a terminal. */
+  .log { background: var(--surface); border-radius: 16px; overflow: hidden; font: 500 14px/1.6 var(--mono); }
+  .log-bar { display: flex; align-items: center; gap: 10px; padding: 12px 20px; border-bottom: 1px solid var(--line); color: var(--muted); font-size: 12px; }
+  .log-bar svg { width: 14px; height: 14px; }
+  .log-bar .ring { fill: none; stroke: var(--cool); stroke-width: 22; }
+  .log-bar .core { fill: var(--warm); }
+  .log-bar span:last-child { margin-left: auto; }
+  .log ol { list-style: none; margin: 0; padding: 10px 0 16px; }
+  .log li { display: grid; grid-template-columns: 22px 104px 116px 1fr; gap: 10px; padding: 7px 20px; }
+  .log li:hover { background: color-mix(in srgb, var(--cool) 12%, transparent); }
+  .log .mk { color: var(--muted); }
+  .log li:hover .mk { color: var(--warm-text); }
+  .log time { color: var(--muted); }
+  .log .tag { color: var(--cool-text); }
+  .log .cursor { display: inline-block; width: 9px; height: 17px; background: var(--cool-text); vertical-align: -3px; animation: blink 1.1s steps(1) infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  footer { border-top: 1px solid var(--line); padding: 24px 0 40px; font: 500 12px var(--mono); color: var(--muted); }
+  footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  footer a { color: var(--cool-text); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+  @media (max-width: 720px) {
+    .hero { padding: 24px 0 56px; }
+    .products { grid-template-columns: 1fr; }
+    .log li { grid-template-columns: 22px 1fr; row-gap: 0; }
+    .log time, .log .tag, .log li > span:last-child { grid-column: 2; }
+    nav a { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+    .js .rise { opacity: 1; transform: none; }
+    .js .logo { opacity: 1; transform: none; pointer-events: auto; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <a class="logo" href="#top" aria-label="Cyber37°">
+      <img class="logo-on-light" src="assets/cyber37deg-logo-on-light.svg" alt="Cyber37°">
+      <img class="logo-on-dark" src="assets/cyber37deg-logo-on-dark.svg" alt="Cyber37°">
+    </a>
+    <nav>
+      <a href="#products">产品</a>
+      <a href="#log">记录</a>
+      <a href="#contact">联系</a>
+      <button class="theme" id="theme" type="button">浅 / 深</button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap" id="top">
+
+  <div class="hero">
+    <!-- hero-lockup:start -->
+    <svg class="lockup" viewBox="-22.7 -1036.5 4266.2 1269.8" role="img" aria-label="Cyber37°"><defs><clipPath id="reveal"><path d="M-222.7 -1236.5L3897 -1236.5L3897 -1018.5A328.5 328.5 0 0 0 3897 -361.5L3897 433.3L-222.7 433.3Z"/></clipPath></defs><g clip-path="url(#reveal)"><path class="word" d="M364.2 14Q283.8 14 222.6 -9.4Q161.4 -32.9 120.1 -77.6Q78.9 -122.3 58.1 -184.7Q37.3 -247.1 37.3 -325Q37.3 -405 58.6 -469.1Q79.9 -533.3 120.9 -579.3Q162 -625.4 221 -649.7Q280 -674 356.5 -674Q418.9 -674 468.2 -657.4Q517.6 -640.7 551.2 -610.3Q584.7 -579.9 601.5 -538.3Q618.3 -496.8 616.4 -447.4L467.4 -415.7Q468.2 -456.9 452.8 -484.9Q437.3 -513 410.9 -527.9Q384.5 -542.8 350.9 -542.8Q322.6 -542.8 296.5 -531.3Q270.4 -519.8 250.2 -494.7Q230.1 -469.5 218.4 -430.2Q206.7 -390.8 206.7 -334.4Q206.7 -261.3 226.6 -213.1Q246.5 -164.9 283 -140.7Q319.6 -116.6 367.8 -116.6Q417.4 -116.6 445.1 -138.5Q472.8 -160.4 484.4 -195.6Q496 -230.8 494.9 -270.3L640.2 -251.3Q641.6 -196.9 627.6 -148.8Q613.6 -100.7 581.1 -64Q548.6 -27.2 495 -6.6Q441.4 14 364.2 14ZM862.4 173.3Q826.5 173.3 786.6 167.1Q746.7 160.9 709.8 148.1Q672.9 135.3 644.3 115.3L682.5 -35.2Q717.9 -1.8 765.7 13.4Q813.5 28.6 855 28.6Q906.4 28.6 940.5 8.5Q974.6 -11.6 992.5 -52Q1010.4 -92.5 1012.1 -152.5L1015.1 -240.9L997.2 -240.9Q991 -174.5 969.3 -132.1Q947.6 -89.6 912.9 -69.5Q878.2 -49.4 831.6 -49.4Q774 -49.4 735.7 -78.4Q697.3 -107.4 678 -165.7Q658.7 -224 658.7 -311L658.7 -528L820.3 -528L820.3 -351.8Q820.3 -262.7 838.6 -223.4Q856.9 -184.1 896.5 -184.1Q917 -184.1 933.4 -195.5Q949.8 -206.9 961 -228.7Q972.2 -250.5 978.1 -282.4Q984 -314.3 984 -354.9L984 -528L1145 -528L1145 -146.5Q1145 -86.5 1133.7 -36.3Q1122.4 13.8 1100.1 52.6Q1077.8 91.4 1044 118.5Q1010.2 145.6 965 159.5Q919.8 173.3 862.4 173.3ZM1525.2 14Q1477.2 14 1441.1 -5.4Q1405 -24.8 1382 -63.4Q1358.9 -102 1349.6 -158.8L1334.9 -158.8L1333.1 0L1198.1 0L1198.1 -230.6L1198.1 -711.9L1359.5 -711.9L1359.5 -545Q1359.5 -519.8 1356.4 -491.5Q1353.3 -463.1 1348.2 -432.5Q1343.1 -401.9 1336.5 -369.1L1354.4 -369.1Q1366.4 -427.4 1389.4 -465.4Q1412.4 -503.4 1447.5 -522.1Q1482.6 -540.8 1529.2 -540.8Q1592.4 -540.8 1638.9 -508.4Q1685.3 -476 1711.1 -414.6Q1736.9 -353.1 1736.9 -264.5Q1736.9 -175.2 1710.4 -113.1Q1683.9 -51 1636.3 -18.5Q1588.7 14 1525.2 14ZM1466.4 -115.6Q1498.2 -115.6 1521.6 -134.5Q1545 -153.4 1557.4 -186.5Q1569.9 -219.6 1569.9 -262.2Q1569.9 -305.3 1558.1 -338.4Q1546.4 -371.5 1523.9 -390.8Q1501.4 -410 1468.8 -410Q1450 -410 1433.1 -403.2Q1416.3 -396.4 1402.9 -383.8Q1389.5 -371.2 1379.5 -354.1Q1369.5 -337 1364.1 -315.9Q1358.7 -294.8 1358.7 -271.4L1358.7 -256Q1358.7 -228.5 1365.7 -203.3Q1372.7 -178.1 1386.4 -158.3Q1400.1 -138.5 1420.2 -127.1Q1440.3 -115.6 1466.4 -115.6ZM2021.1 14Q1951.4 14 1900 -5.1Q1848.6 -24.2 1814.4 -59.7Q1780.1 -95.1 1763 -144.3Q1746 -193.5 1746 -253.6Q1746 -314.2 1762.8 -366.8Q1779.7 -419.4 1812.9 -458.7Q1846.1 -498 1895.8 -520Q1945.5 -542 2010.5 -542Q2075.5 -542 2124 -520.3Q2172.5 -498.6 2203.3 -457.8Q2234.1 -417 2246.4 -360.5Q2258.8 -304 2251.4 -234L1849.9 -229.8L1849.9 -315.4L2147 -319.2L2104 -275.4Q2110.6 -323.8 2099.8 -355.3Q2089 -386.8 2066.1 -402.1Q2043.1 -417.4 2011.7 -417.4Q1975.9 -417.4 1950.9 -398.4Q1925.9 -379.4 1913.3 -344Q1900.8 -308.6 1900.8 -258.6Q1900.8 -177 1933.1 -140Q1965.5 -103 2020.9 -103Q2046.7 -103 2063.9 -109.9Q2081 -116.8 2091.9 -128.3Q2102.8 -139.8 2108.3 -154.8Q2113.8 -169.8 2115.8 -186.1L2259 -164.4Q2255.5 -129 2240.9 -97Q2226.4 -65 2198.3 -40Q2170.2 -15.1 2126.7 -0.5Q2083.1 14 2021.1 14ZM2290.1 0L2290.1 -261.4L2290.1 -528L2424.7 -528L2426.5 -337L2442.2 -337Q2448.8 -412.1 2467.5 -456.5Q2486.2 -500.8 2518.7 -520.4Q2551.1 -540 2597.2 -540Q2609.3 -540 2622.8 -537.7Q2636.4 -535.4 2651.8 -529.7L2645 -355.1Q2626.5 -364.5 2607 -368.6Q2587.5 -372.7 2571.5 -372.7Q2535.3 -372.7 2509.5 -356.5Q2483.6 -340.3 2469.1 -308Q2454.6 -275.7 2451.7 -227.5L2451.7 0L2290.1 0ZM2930.1 14Q2863.5 14 2813.8 1Q2764.1 -12 2730.7 -36.9Q2697.3 -61.8 2679.6 -98.8Q2661.9 -135.8 2659.8 -183.7L2807.6 -220.4Q2808.4 -195.8 2816.7 -175.5Q2825 -155.2 2841.1 -140.6Q2857.3 -126 2880.9 -118.3Q2904.5 -110.6 2935.3 -110.6Q2969.1 -110.6 2994.8 -120.7Q3020.5 -130.8 3034.9 -151.3Q3049.3 -171.8 3049.3 -202.6Q3049.3 -243 3021.7 -268.9Q2994.1 -294.8 2936.1 -304Q2878.1 -313.1 2786.7 -303.1L2786.7 -394.6L2995.4 -524.8L2995.4 -531.8L2694 -530L2694 -661L3170 -661L3170 -522.1L2960.7 -384.6L2960.7 -376.6Q3052.7 -382.8 3107.8 -358.2Q3162.9 -333.6 3187.7 -289.6Q3212.5 -245.6 3212.5 -193.3Q3212.5 -129.8 3181.6 -83.5Q3150.7 -37.2 3088.2 -11.6Q3025.7 14 2930.1 14ZM3324.1 -0Q3324.1 -67 3339.4 -135.8Q3354.7 -204.6 3384.8 -272.5Q3415 -340.4 3460.6 -404.2Q3506.3 -468 3566.9 -524.8L3566.9 -531.8L3233.8 -528.8L3233.8 -661L3569.8 -661A328.5 328.5 0 0 0 3658 -464.7Q3646.6 -449.1 3635.5 -431.8Q3598 -373.8 3568.1 -303.8Q3538.3 -233.8 3520.7 -156.5Q3503.1 -79.2 3503.1 -0L3324.1 -0Z"/></g><path class="ring" d="M3610.5 -690A286.5 286.5 0 1 0 4183.5 -690A286.5 286.5 0 1 0 3610.5 -690ZM3727.5 -690A169.5 169.5 0 1 0 4066.5 -690A169.5 169.5 0 1 0 3727.5 -690Z" fill-rule="evenodd"/><path class="core" d="M3819 -690A78 78 0 1 0 3975 -690A78 78 0 1 0 3819 -690Z"/></svg>
+    <!-- hero-lockup:end -->
+    <h1 class="rise" style="--delay: 2.1s">让世界来适应你的温度</h1>
+    <p class="rise" style="--delay: 2.3s">Cyber37° 是个产品实验室：为总在适应数字世界的人，做反过来适应人的产品，带人们去未来。</p>
+  </div>
+
+  <section id="products">
+    <h2 class="rise">产品</h2>
+    <div class="products">
+      <article class="card rise" tabindex="0">
+        <span class="probe" aria-hidden="true"><svg viewBox="-60 -60 120 120"><circle class="ring" r="48"/><circle class="core" r="17"/></svg></span>
+        <h3>防晕 3D</h3>
+        <small>暂用名，正式名字待定</small>
+        <p>给一玩 3D 就头晕的玩家。两分钟帮你找到自己受得了的画面设置，让买了的游戏玩得下去。还在做。</p>
+        <div class="by">by Cyber37°</div>
+      </article>
+      <article class="card rise" style="--delay: 0.12s" tabindex="0">
+        <span class="probe" aria-hidden="true"><svg viewBox="-60 -60 120 120"><circle class="ring" r="48"/><circle class="core" r="17"/></svg></span>
+        <h3>预期式交互</h3>
+        <small>暂用名，正式名字待定</small>
+        <p>让软件先你一步，在你开口之前把重复的杂事做掉，拿不准的时候不来打扰。还在构想。</p>
+        <div class="by">by Cyber37°</div>
+      </article>
+    </div>
+  </section>
+
+  <section id="log">
+    <h2 class="rise">最近记录</h2>
+    <div class="log rise">
+      <div class="log-bar">
+        <svg viewBox="-60 -60 120 120" aria-hidden="true"><circle class="ring" r="42"/><circle class="core" r="15"/></svg>
+        <span>cyber37deg / log</span>
+        <span>3 条</span>
+      </div>
+      <ol>
+        <li class="rise" style="--delay: 0.15s"><span class="mk">›</span><time datetime="2026-10-07">2026-10-07</time><span class="tag">防晕 3D</span><span>竞品数据分析：Steam 上 12 款产品的指标，113 条评价全文</span></li>
+        <li class="rise" style="--delay: 0.3s"><span class="mk">›</span><time datetime="2026-10-07">2026-10-07</time><span class="tag">预期式交互</span><span>想法梳理：定义、历史案例、候选形态</span></li>
+        <li class="rise" style="--delay: 0.45s"><span class="mk">›</span><time datetime="2026-10-06">2026-10-06</time><span class="tag">防晕 3D</span><span>调研：成因、干预证据、现有方案全景</span></li>
+        <li class="rise" style="--delay: 0.6s"><span class="mk">›</span><span class="cursor" aria-hidden="true"></span></li>
+      </ol>
+    </div>
+  </section>
+
+</main>
+
+<footer id="contact">
+  <div class="wrap">
+    <span>Cyber37° Lab · 早期预览</span>
+    <a href="https://github.com/Lemonaderrrrr" rel="noopener">GitHub</a>
+  </div>
+</footer>
+
+<script>
+  (function () {
+    var root = document.documentElement;
+
+    // Theme: follow the system unless the visitor has picked one.
+    var saved = null;
+    try { saved = localStorage.getItem("cyber37-theme"); } catch (e) {}
+    if (saved === "light" || saved === "dark") root.setAttribute("data-theme", saved);
+    document.getElementById("theme").addEventListener("click", function () {
+      var current = root.getAttribute("data-theme");
+      if (!current) current = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+      var next = current === "dark" ? "light" : "dark";
+      root.setAttribute("data-theme", next);
+      try { localStorage.setItem("cyber37-theme", next); } catch (e) {}
+    });
+
+    // Hero: play once on load, again when the pointer comes back to it.
+    var lockup = document.querySelector(".lockup");
+    var playing = false;
+    function play() {
+      if (!lockup || playing) return;
+      playing = true;
+      lockup.classList.remove("play");
+      void lockup.getBoundingClientRect();
+      lockup.classList.add("play");
+      setTimeout(function () { playing = false; }, 2600);
+    }
+    play();
+    if (lockup) lockup.addEventListener("pointerenter", play);
+
+    // Text rises in when it scrolls into view; the small logo appears once
+    // the big one has left the screen.
+    var rising = document.querySelectorAll(".rise");
+    if ("IntersectionObserver" in window) {
+      var seen = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting) { e.target.classList.add("in"); seen.unobserve(e.target); }
+        });
+      }, { threshold: 0.15 });
+      rising.forEach(function (el) { seen.observe(el); });
+      if (lockup) {
+        new IntersectionObserver(function (entries) {
+          root.classList.toggle("past-hero", !entries[0].isIntersecting);
+        }, { rootMargin: "-64px 0px 0px 0px" }).observe(lockup);
+      }
+    } else {
+      rising.forEach(function (el) { el.classList.add("in"); });
+      root.classList.add("past-hero");
+    }
+
+    // Cards: the ink spreads from the pointer, and the ring follows it while
+    // it is inside. On leaving, the ring goes back to its corner.
+    document.querySelectorAll(".card").forEach(function (card) {
+      function place(e) {
+        var r = card.getBoundingClientRect();
+        var x = (e.clientX - r.left) + "px", y = (e.clientY - r.top) + "px";
+        card.style.setProperty("--mx", x);
+        card.style.setProperty("--my", y);
+        return [x, y];
+      }
+      function follow(e) {
+        if (e.pointerType === "touch") { place(e); return; }
+        var at = place(e);
+        card.style.setProperty("--px", at[0]);
+        card.style.setProperty("--py", at[1]);
+      }
+      card.addEventListener("pointerenter", follow);
+      card.addEventListener("pointermove", follow);
+      card.addEventListener("pointerleave", function (e) {
+        place(e);
+        card.style.removeProperty("--px");
+        card.style.removeProperty("--py");
+      });
+    });
+  })();
+</script>
+</body>
+</html>
